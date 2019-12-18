@@ -33,10 +33,15 @@ dependencies {
     // Use the Kotlin JUnit integration.
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
     compile("io.javalin:javalin:3.6.0")
+    // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+    compile("org.slf4j:slf4j-simple:1.8.0-beta4")
+    compile("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.0")
+    compile("org.webjars.npm:vue:2.6.10")
+
 
 }
 
 application {
     // Define the main class for the application
-    mainClassName = "api.ApiRouterKt"
+    mainClassName = "api.AppKt"
 }
