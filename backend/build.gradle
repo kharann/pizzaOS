@@ -46,5 +46,5 @@ dependencies {
 
 application {
     // Define the main class for the application
-    mainClassName = 'backend.api.AppKt'
+    mainClassName = 'api.AppKt'
 }
