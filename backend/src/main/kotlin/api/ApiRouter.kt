@@ -3,7 +3,6 @@ package api
 import io.javalin.Javalin
 import models.pizza.Pizza
 
-
 fun main() {
     val pizzaDao = PizzaDao()
     val app = Javalin.create().start(7000)
@@ -30,5 +29,4 @@ fun main() {
         pizzaDao.delete(ctx.pathParam("pizza-id").toInt())
         ctx.status(204)
     }
-
 }
