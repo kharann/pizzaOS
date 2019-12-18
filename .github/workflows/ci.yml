@@ -9,7 +9,7 @@ on:
     branches:
       - master
 jobs:
-  build:
+  gradle:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
