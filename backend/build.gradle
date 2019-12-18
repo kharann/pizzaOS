@@ -44,6 +44,9 @@ dependencies {
 
 }
 
+task ci(type: GradleBuild, dependsOn: ['clean', 'build', 'check']){
+
+}
 application {
     // Define the main class for the application
     mainClassName = 'api.AppKt'

@@ -20,6 +20,6 @@ jobs:
       - name: Gradle build
         uses: eskatos/gradle-command-action@v1
         with:
-          arguments: build
+          arguments: ci
           build-root-directory: backend/
           wrapper-directory: backend/  
