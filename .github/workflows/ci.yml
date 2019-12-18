@@ -23,6 +23,7 @@ jobs:
           arguments: ci
           build-root-directory: backend/
           wrapper-directory: backend/
+        id: gradle
       - name: Comment PR
         uses: thollander/actions-comment-pull-request@master
         if: failure()
