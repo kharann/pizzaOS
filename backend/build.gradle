@@ -45,7 +45,7 @@ dependencies {
 
 }
 
-task ci(type: GradleBuild, dependsOn: ['build', 'check']) {
+task ci(type: GradleBuild, dependsOn: ['clean','build', 'check']) {
 
 }
 application {
