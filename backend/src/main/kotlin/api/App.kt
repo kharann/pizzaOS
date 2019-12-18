@@ -3,13 +3,12 @@
  */
 package api
 
-class App {
-    val greeting: String
-        get() {
-            return "Hello world."
-        }
-}
+import io.javalin.Javalin
 
-fun main(args: Array<String>) {
-    println(App().greeting)
+fun main() {
+    val app = Javalin.create { config -> config.enableWebjars() }.start(7070)
+    apiRoutes(app)
+    app.get("/") { ctx -> ctx.result("Hello World") }
+
+
 }

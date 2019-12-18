@@ -1,34 +1,36 @@
 package api
 
 import io.javalin.Javalin
+import io.javalin.apibuilder.ApiBuilder.*
+import io.javalin.core.security.Role
 import models.pizza.Pizza
 
+enum class AppRole : Role { ANYONE, LOGGED_IN, ADMIN }
 
-fun main() {
-    val pizzaDao = PizzaDao()
-    val app = Javalin.create().start(7000)
-    app.get("/api") { ctx -> ctx.result("Hello World") }
+fun apiRoutes(app: Javalin) {
+    val pizzaDao = PizzaController()
+    app.routes {
+        path("/api") {
+            path("/pizzas") {
+                get { ctx -> ctx.json(pizzaDao.pizzas) }
+                post { ctx ->
+                    val pizza = ctx.body<Pizza>()
+                    pizzaDao.save(pizza.name, pizza.sauce, pizza.cheese, pizza.toppings)
+                    ctx.status(201)
+                }
+                path(":pizza-id") {
+                    get { ctx -> pizzaDao.findById(ctx.pathParam("pizza-id").toInt()) }
+                    patch { ctx ->
+                        pizzaDao.update(ctx.pathParam("pizza-id").toInt(), ctx.body<Pizza>())
+                        ctx.status(204)
+                    }
+                    delete { ctx ->
+                        pizzaDao.delete(ctx.pathParam("pizza-id").toInt())
+                        ctx.status(204)
+                    }
+                }
 
-    app.get("/api/pizzas") { ctx ->
-        ctx.json(pizzaDao.pizzas)
+            }
+        }
     }
-
-    app.get("/api/pizzas/:pizza-id") { ctx -> pizzaDao.findById(ctx.pathParam("pizza-id").toInt()) }
-
-    app.post("/api/pizzas") { ctx ->
-        val pizza = ctx.body<Pizza>()
-        pizzaDao.save(pizza.dough, pizza.size, pizza.toppings)
-        ctx.status(201)
-    }
-
-    app.patch("/api/pizzas/:pizza-id") { ctx ->
-        pizzaDao.update(ctx.pathParam("pizza-id").toInt(), ctx.body<Pizza>())
-        ctx.status(204)
-    }
-
-    app.delete("/api/pizzas/:pizza-id") { ctx ->
-        pizzaDao.delete(ctx.pathParam("pizza-id").toInt())
-        ctx.status(204)
-    }
-
 }
