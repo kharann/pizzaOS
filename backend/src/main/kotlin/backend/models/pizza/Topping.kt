@@ -1,4 +1,4 @@
-package models.pizza
+package backend.models.pizza
 
 enum class Topping(val value: Int) {
     MARINATED_BEEF(30),
