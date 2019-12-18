@@ -1,4 +1,4 @@
-package models.pizza
+package backend.models.pizza
 
 enum class Sauce {
     TOMATO, BBQ, TACO;

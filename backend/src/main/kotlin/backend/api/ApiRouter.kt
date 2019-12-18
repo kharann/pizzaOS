@@ -1,16 +1,20 @@
-package api
+package backend.api
 
+import backend.models.pizza.Pizza
 import io.javalin.Javalin
-import io.javalin.apibuilder.ApiBuilder.*
+import io.javalin.apibuilder.ApiBuilder.delete
+import io.javalin.apibuilder.ApiBuilder.get
+import io.javalin.apibuilder.ApiBuilder.patch
+import io.javalin.apibuilder.ApiBuilder.path
+import io.javalin.apibuilder.ApiBuilder.post
 import io.javalin.core.security.Role
-import models.pizza.Pizza
 
 enum class AppRole : Role { ANYONE, LOGGED_IN, ADMIN }
 
 fun apiRoutes(app: Javalin) {
     val pizzaDao = PizzaController()
     app.routes {
-        path("/api") {
+        path("") {
             path("/pizzas") {
                 get { ctx -> ctx.json(pizzaDao.pizzas) }
                 post { ctx ->
@@ -29,7 +33,6 @@ fun apiRoutes(app: Javalin) {
                         ctx.status(204)
                     }
                 }
-
             }
         }
     }

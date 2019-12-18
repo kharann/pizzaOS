@@ -7,7 +7,7 @@
 plugins {
     // Apply the Kotlin JVM plugin to add support for Kotlin.
     id("org.jetbrains.kotlin.jvm") version "1.3.41"
-    id("org.jlleitschuh.gradle.ktlint-idea") version "9.1.1"
+    id("org.jmailen.kotlinter") version "2.2.0"
 
     // Apply the application plugin to add support for building a CLI application.
     application
@@ -43,5 +43,5 @@ dependencies {
 
 application {
     // Define the main class for the application
-    mainClassName = "api.AppKt"
+    mainClassName = "backend.api.AppKt"
 }
