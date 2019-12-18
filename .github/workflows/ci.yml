@@ -11,15 +11,21 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    steps: 
+    steps:
       - uses: actions/checkout@master
-      - name: Setup Java  
+      - name: Setup Java
         uses: actions/setup-java@v1
         with:
           java-version: 11
-      - name: Gradle build
+      - name: Gradle CI
         uses: eskatos/gradle-command-action@v1
         with:
           arguments: ci
           build-root-directory: backend/
-          wrapper-directory: backend/  
+          wrapper-directory: backend/
+      - name: Comment PR
+        uses: thollander/actions-comment-pull-request@master
+        if: failure()
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          message: Build failed ${{ steps.gradle.outputs.build-scan-url }}
