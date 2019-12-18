@@ -12,12 +12,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps: 
-    - name: Set up 
-      uses: actions/checkout@master
-      with:
-        working-directory: ./backend/
-    - name: Gradle build and check
-      uses: MrRamych/gradle-actions/openjdk-12@3.1
-      with:
-        working-directory: ./backend/
-        args: build check
+      - uses: actions/checkout@master
+      - name: Setup Java  
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - uses: eskatos/gradle-command-action@v1
+        with:
+          arguments: build
+          build-root-directory: ./backend/
