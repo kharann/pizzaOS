@@ -20,7 +20,7 @@ jobs:
       - name: Gradle CI
         uses: eskatos/gradle-command-action@v1
         with:
-          arguments: ci --scan
+          arguments: ci
           build-root-directory: backend/
           wrapper-directory: backend/
         id: gradle
