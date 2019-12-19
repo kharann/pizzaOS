@@ -2,17 +2,18 @@ package backend.models.pizza
 
 data class Pizza(
     val name: String? = null,
-    val sauce: Sauce,
-    val cheese: Cheese,
-    val toppings: List<Topping>,
-    val id: Int? = null
+    val sauce: Sauce = Sauce.TOMATO,
+    val cheese: Cheese = Cheese.MOZERELLA,
+    val toppings: List<Topping> = listOf(),
+    val id: Int = 0
 ) {
 
     fun getPrice(): Int {
-        return toppings.fold(0) { sum, topping -> sum + topping.value }
+        return sauce.value + cheese.value +
+            toppings.fold(0) { sum, topping -> sum + topping.value }
     }
 
     override fun toString(): String {
-        return "Pizza: $name"
+        return "name: $name, sauce: $sauce, cheese: $cheese, toppings: $toppings"
     }
 }

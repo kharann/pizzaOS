@@ -34,11 +34,13 @@ dependencies {
 
     // Use the Kotlin JUnit integration.
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
+    implementation("com.google.firebase:firebase-admin:6.11.0")
     compile("io.javalin:javalin:3.6.0")
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
     compile("org.slf4j:slf4j-simple:1.8.0-beta4")
     compile("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.0")
     compile("org.webjars.npm:vue:2.6.10")
+    compile("io.github.cdimascio:java-dotenv:5.1.3")
 }
 
 tasks {
@@ -54,7 +56,7 @@ tasks.withType<KotlinCompile>().configureEach {
 
 application {
     // Define the main class for the application
-    mainClassName = "api.ApiRouterKt"
+    mainClassName = "backend.api.AppKt"
 }
 buildScan {
     termsOfServiceUrl = "https://gradle.com/terms-of-service"

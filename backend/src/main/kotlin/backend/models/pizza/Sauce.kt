@@ -1,9 +1,5 @@
 package backend.models.pizza
 
-enum class Sauce {
-    TOMATO, BBQ, TACO;
-
-    override fun toString(): String {
-        return super.toString() + "-SAUCE"
-    }
+enum class Sauce(val value: Int) {
+    TOMATO(10), BBQ(15), TACO(15);
 }
