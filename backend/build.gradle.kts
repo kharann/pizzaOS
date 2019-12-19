@@ -40,6 +40,7 @@ dependencies {
     compile("org.slf4j:slf4j-simple:1.8.0-beta4")
     compile("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.0")
     compile("org.webjars.npm:vue:2.6.10")
+    compile("io.github.cdimascio:java-dotenv:5.1.3")
 }
 
 tasks {
