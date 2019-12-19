@@ -38,6 +38,7 @@ class PizzaController {
         )
         collection.document("pizza$id")
             .set(pizza)
+            .also { println("Saved pizza with the id of $id") }
     }
 
     fun update(id: Int, pizza: Pizza) {
@@ -49,10 +50,12 @@ class PizzaController {
         )
         collection.document("pizza$id")
             .set(data)
+            .also { println("Updated pizza with the id of $id") }
     }
 
     fun delete(id: Int) {
         collection.document("pizza$id").delete()
+            .also { println("Deleted pizza with the id of $id") }
     }
 }
 
