@@ -13,23 +13,23 @@ import io.javalin.Javalin
 import java.io.FileInputStream
 
 fun main() {
-    /**
-     * Create a .env file and set the follow Env Variables
-     * DATABASE_URL = "https://<yourFirestoreAppName>.firebaseio.com/"
-     * GOOGLE_APPLICATION_CREDENTIALS = "path/to/credentialsFile.json"
-     */
-    val databaseUrl = dotenv()["DATABASE_URL"]
-    val credentialsPath = dotenv()["GOOGLE_APPLICATION_CREDENTIALS"]
-    if (databaseUrl.isNullOrBlank() || credentialsPath.isNullOrBlank()) {
-        throw IllegalStateException("Please provide the required Envoriment variables")
-    }
-    val options = FirebaseOptions.Builder()
-        .setCredentials(GoogleCredentials.fromStream(FileInputStream(credentialsPath)))
-        .setDatabaseUrl(databaseUrl)
-        .build()
-    FirebaseApp.initializeApp(options)
+  /**
+   * Create a .env file and set the follow Env Variables
+   * DATABASE_URL = "https://<yourFirestoreAppName>.firebaseio.com/"
+   * GOOGLE_APPLICATION_CREDENTIALS = "path/to/credentialsFile.json"
+   */
+  val databaseUrl = dotenv()["DATABASE_URL"]
+  val credentialsPath = dotenv()["GOOGLE_APPLICATION_CREDENTIALS"]
+  if (databaseUrl.isNullOrBlank() || credentialsPath.isNullOrBlank()) {
+    throw IllegalStateException("Please provide the required Envoriment variables")
+  }
+  val options = FirebaseOptions.Builder()
+    .setCredentials(GoogleCredentials.fromStream(FileInputStream(credentialsPath)))
+    .setDatabaseUrl(databaseUrl)
+    .build()
+  FirebaseApp.initializeApp(options)
 
-    val app = Javalin.create { config -> config.enableWebjars() }.start(7070)
-    apiRoutes(app)
-    app.get("/") { ctx -> ctx.result("Hello World") }
+  val app = Javalin.create { config -> config.enableWebjars() }.start(7070)
+  apiRoutes(app)
+  app.get("/") { ctx -> ctx.result("Hello World") }
 }
