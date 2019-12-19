@@ -16,6 +16,3 @@ data class Pizza(
         return "Pizza: $name"
     }
 }
-
-fun main() {
-}
