@@ -1,25 +1,22 @@
 package backend.api
 
-import backend.models.pizza.Cheese
 import backend.models.pizza.Pizza
-import backend.models.pizza.Sauce
-import backend.models.pizza.Topping
 import com.google.cloud.firestore.CollectionReference
 import com.google.cloud.firestore.Query
 import com.google.firebase.cloud.FirestoreClient
 import java.util.concurrent.atomic.AtomicInteger
 
-class PizzaController {
+class PizzaController : CrudController<Pizza> {
     private val collection = FirestoreClient.getFirestore().collection("pizzas")
     private var lastId: AtomicInteger = getLastId(collection)
 
-    fun getAll(): List<Pizza> {
+    override fun getAll(): List<Pizza> {
         val future = collection.get()
         return future.get().documents.map { docRef -> docRef.toObject(Pizza::class.java) }
             .also { pizzas -> println(pizzas) }
     }
 
-    fun findById(id: Int): Pizza? {
+    override fun getOne(id: Int): Pizza? {
         val future = collection.document("pizza$id").get()
         val docRef = future.get()
         return if (docRef.exists()) docRef.toObject(Pizza::class.java).also { pizza ->
@@ -27,13 +24,13 @@ class PizzaController {
         } else null
     }
 
-    fun save(name: String?, sauce: Sauce, cheese: Cheese, toppings: List<Topping>) {
+    override fun create(item: Pizza) {
         val id = lastId.incrementAndGet()
         val pizza = hashMapOf(
-            "name" to "$name",
-            "sauce" to "$sauce",
-            "cheese" to "$cheese",
-            "toppings" to toppings.map { topping -> "$topping" },
+            "name" to "${item.name}",
+            "sauce" to "${item.sauce}",
+            "cheese" to "${item.cheese}",
+            "toppings" to item.toppings.map { topping -> "$topping" },
             "id" to id
         )
         collection.document("pizza$id")
@@ -41,19 +38,19 @@ class PizzaController {
             .also { println("Saved pizza with the id of $id") }
     }
 
-    fun update(id: Int, pizza: Pizza) {
+    override fun update(id: Int, item: Pizza) {
         val data = hashMapOf(
-            "name" to "${pizza.name}",
-            "sauce" to "${pizza.sauce}",
-            "cheese" to "${pizza.cheese}",
-            "toppings" to pizza.toppings.map { topping -> "$topping" }
+            "name" to "${item.name}",
+            "sauce" to "${item.sauce}",
+            "cheese" to "${item.cheese}",
+            "toppings" to item.toppings.map { topping -> "$topping" }
         )
         collection.document("pizza$id")
             .set(data)
             .also { println("Updated pizza with the id of $id") }
     }
 
-    fun delete(id: Int) {
+    override fun delete(id: Int) {
         collection.document("pizza$id").delete()
             .also { println("Deleted pizza with the id of $id") }
     }

@@ -19,11 +19,11 @@ fun apiRoutes(app: Javalin) {
                 get { ctx -> ctx.json(pizzaController.getAll()) }
                 post { ctx ->
                     val pizza = ctx.body<Pizza>()
-                    pizzaController.save(pizza.name, pizza.sauce, pizza.cheese, pizza.toppings)
+                    pizzaController.create(pizza)
                     ctx.status(201)
                 }
                 path(":pizza-id") {
-                    get { ctx -> pizzaController.findById(ctx.pathParam("pizza-id").toInt())?.let { ctx.json(it) } }
+                    get { ctx -> pizzaController.getOne(ctx.pathParam("pizza-id").toInt())?.let { ctx.json(it) } }
                     patch { ctx ->
                         pizzaController.update(ctx.pathParam("pizza-id").toInt(), ctx.body<Pizza>())
                         ctx.status(204)
