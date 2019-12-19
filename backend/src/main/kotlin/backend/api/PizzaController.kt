@@ -4,49 +4,63 @@ import backend.models.pizza.Cheese
 import backend.models.pizza.Pizza
 import backend.models.pizza.Sauce
 import backend.models.pizza.Topping
+import com.google.cloud.firestore.CollectionReference
+import com.google.cloud.firestore.Query
+import com.google.firebase.cloud.FirestoreClient
 import java.util.concurrent.atomic.AtomicInteger
 
 class PizzaController {
+    private val collection = FirestoreClient.getFirestore().collection("pizzas")
+    private var lastId: AtomicInteger = getLastId(collection)
 
-    val pizzas = hashMapOf(
-        1 to Pizza(
-            "Margharita", Sauce.TOMATO, Cheese.MOZERELLA,
-            listOf(), 1
-        ),
-        2 to Pizza(
-            "Double Pepperoni", Sauce.TOMATO, Cheese.MOZERELLA,
-            listOf(Topping.PEPPERONI, Topping.PEPPERONI), 2
-        ),
-        3 to Pizza(
-            "Tennesee BBQ Chicken", Sauce.BBQ, Cheese.MOZERELLA,
-            listOf(Topping.MARINATED_CHICKEN, Topping.ONION, Topping.HAM), 3
-        ),
-        4 to Pizza(
-            "Kebaben", Sauce.TACO, Cheese.MOZERELLA,
-            listOf(Topping.KEBAB_MEAT, Topping.CORN, Topping.JALEPENOS, Topping.PAPRIKA, Topping.TORTILLA_CHIPS), 4
-        ),
-        5 to Pizza(
-            "Sopp Bacon Spesial", Sauce.TOMATO, Cheese.MOZERELLA,
-            listOf(Topping.MARINATED_BEEF, Topping.MUSHROOM, Topping.BACON), 5
-        )
-
-    )
-    private var lastId: AtomicInteger = AtomicInteger(pizzas.size - 1)
-
-    fun save(name: String?, sauce: Sauce, cheese: Cheese, topping: List<Topping>) {
-        val id = lastId.incrementAndGet()
-        pizzas[id] = Pizza(name, sauce, cheese, topping)
+    fun getAll(): List<Pizza> {
+        val future = collection.get()
+        return future.get().documents.map { docRef -> docRef.toObject(Pizza::class.java) }
+            .also { pizzas -> println(pizzas) }
     }
 
     fun findById(id: Int): Pizza? {
-        return pizzas[id]
+        val future = collection.document("pizza$id").get()
+        val docRef = future.get()
+        return if (docRef.exists()) docRef.toObject(Pizza::class.java).also { pizza ->
+            println(pizza)
+        } else null
+    }
+
+    fun save(name: String?, sauce: Sauce, cheese: Cheese, toppings: List<Topping>) {
+        val id = lastId.incrementAndGet()
+        val pizza = hashMapOf(
+            "name" to "$name",
+            "sauce" to "$sauce",
+            "cheese" to "$cheese",
+            "toppings" to toppings.map { topping -> "$topping" },
+            "id" to id
+        )
+        collection.document("pizza$id")
+            .set(pizza)
     }
 
     fun update(id: Int, pizza: Pizza) {
-        pizzas[id] = Pizza(pizza.name, pizza.sauce, pizza.cheese, pizza.toppings, id)
+        val data = hashMapOf(
+            "name" to "${pizza.name}",
+            "sauce" to "${pizza.sauce}",
+            "cheese" to "${pizza.cheese}",
+            "toppings" to pizza.toppings.map { topping -> "$topping" }
+        )
+        collection.document("pizza$id")
+            .set(data)
     }
 
     fun delete(id: Int) {
-        pizzas.remove(id)
+        collection.document("pizza$id").delete()
     }
+}
+
+fun getLastId(collection: CollectionReference): AtomicInteger {
+    val query = collection.orderBy("Time", Query.Direction.DESCENDING).limit(1)
+    val docRef = query.get().get().documents
+    val id = if (docRef.isNotEmpty()) {
+        docRef[0].getString("id")?.toInt()
+    } else null
+    return AtomicInteger(id ?: 0)
 }
