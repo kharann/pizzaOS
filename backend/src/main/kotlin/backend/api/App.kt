@@ -20,6 +20,9 @@ fun main() {
      */
     val databaseUrl = dotenv()["DATABASE_URL"]
     val credentialsPath = dotenv()["GOOGLE_APPLICATION_CREDENTIALS"]
+    if (databaseUrl.isNullOrBlank() || credentialsPath.isNullOrBlank()) {
+        throw IllegalStateException("Please provide the required Envoriment variables")
+    }
     val options = FirebaseOptions.Builder()
         .setCredentials(GoogleCredentials.fromStream(FileInputStream(credentialsPath)))
         .setDatabaseUrl(databaseUrl)
