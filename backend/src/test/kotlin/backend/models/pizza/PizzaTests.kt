@@ -28,4 +28,3 @@ class PizzaTests {
     assertEquals(pizza.getPrice(), expectedPizzaPrice, "Price should be $expectedPizzaPrice")
   }
 }
-
