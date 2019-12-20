@@ -59,7 +59,7 @@ class PizzaController : CrudController<PizzaType> {
 fun getLastId(collection: CollectionReference): AtomicInteger {
   val query = collection.orderBy("Time", Query.Direction.DESCENDING).limit(1)
   val docRef = query.get().get().documents
-  val id = if (docRef.isNotEmpty()) {
+  val id: Int? = if (docRef.isNotEmpty()) {
     docRef[0].getString("id")?.toInt()
   } else null
   return AtomicInteger(id ?: 0)
