@@ -1,6 +1,6 @@
 package backend.api
 
-import backend.models.pizza.Pizza
+import backend.models.pizza.PizzaType
 import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder.delete
 import io.javalin.apibuilder.ApiBuilder.get
@@ -18,14 +18,14 @@ fun apiRoutes(app: Javalin) {
       path("/pizzas") {
         get { ctx -> ctx.json(pizzaController.getAll()) }
         post { ctx ->
-          val pizza = ctx.body<Pizza>()
+          val pizza = ctx.body<PizzaType>()
           pizzaController.create(pizza)
           ctx.status(201)
         }
         path(":pizza-id") {
           get { ctx -> pizzaController.getOne(ctx.pathParam("pizza-id").toInt())?.let { ctx.json(it) } }
           patch { ctx ->
-            pizzaController.update(ctx.pathParam("pizza-id").toInt(), ctx.body<Pizza>())
+            pizzaController.update(ctx.pathParam("pizza-id").toInt(), ctx.body<PizzaType>())
             ctx.status(204)
           }
           delete { ctx ->

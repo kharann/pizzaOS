@@ -7,58 +7,60 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
  */
 
 plugins {
-    // Apply the Kotlin JVM plugin to add support for Kotlin.
-    kotlin("jvm") version "1.3.61"
-    // Apply the application plugin to add support for building a CLI application.
-    application
-    java
-    `build-scan`
-    id("org.jlleitschuh.gradle.ktlint") version "9.1.1"
+  // Apply the Kotlin JVM plugin to add support for Kotlin.
+  kotlin("jvm") version "1.3.61"
+  // Apply the application plugin to add support for building a CLI application.
+  application
+  java
+  `build-scan`
+  id("org.jlleitschuh.gradle.ktlint") version "9.1.1"
 }
 
 repositories {
-    // Use jcenter for resolving dependencies.
-    // You can declare any Maven/Ivy/file repository here.
-    jcenter()
-    mavenCentral()
+  // Use jcenter for resolving dependencies.
+  // You can declare any Maven/Ivy/file repository here.
+  jcenter()
+  mavenCentral()
 }
 
 dependencies {
-    implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
+  implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
+  // Use the Kotlin JDK 8 standard library.
+  implementation(kotlin("stdlib-jdk8"))
+  testImplementation("org.junit.jupiter:junit-jupiter:5.5.2")
 
-    // Use the Kotlin JDK 8 standard library.
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-
-    // Use the Kotlin test library.
-    testImplementation("org.jetbrains.kotlin:kotlin-test")
-
-    // Use the Kotlin JUnit integration.
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
-    implementation("com.google.firebase:firebase-admin:6.11.0")
-    compile("io.javalin:javalin:3.6.0")
-    // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
-    compile("org.slf4j:slf4j-simple:1.8.0-beta4")
-    compile("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.0")
-    compile("org.webjars.npm:vue:2.6.10")
-    compile("io.github.cdimascio:java-dotenv:5.1.3")
+  implementation("com.google.firebase:firebase-admin:6.11.0")
+  compile("io.javalin:javalin:3.6.0")
+  // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+  compile("org.slf4j:slf4j-simple:1.8.0-beta4")
+  compile("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.0")
+  compile("org.webjars.npm:vue:2.6.10")
+  compile("io.github.cdimascio:java-dotenv:5.1.3")
 }
 
 tasks {
-    val ci by registering(GradleBuild::class) {
-        dependsOn("clean")
-        dependsOn("build")
+  val ci by registering(GradleBuild::class) {
+    dependsOn("clean")
+    dependsOn("build")
+  }
+
+  test {
+    useJUnitPlatform()
+    testLogging {
+      events("passed", "skipped", "failed")
     }
+  }
 }
 
 tasks.withType<KotlinCompile>().configureEach {
-    kotlinOptions.jvmTarget = "1.8"
+  kotlinOptions.jvmTarget = "1.8"
 }
 
 application {
-    // Define the main class for the application
-    mainClassName = "backend.api.AppKt"
+  // Define the main class for the application
+  mainClassName = "backend.api.AppKt"
 }
 buildScan {
-    termsOfServiceUrl = "https://gradle.com/terms-of-service"
-    termsOfServiceAgree = "yes"
+  termsOfServiceUrl = "https://gradle.com/terms-of-service"
+  termsOfServiceAgree = "yes"
 }
