@@ -22,6 +22,7 @@ repositories {
   jcenter()
   mavenCentral()
 }
+val ktor_version = "1.2.4"
 
 dependencies {
   implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
@@ -29,12 +30,12 @@ dependencies {
   implementation(kotlin("stdlib-jdk8"))
   testImplementation("org.junit.jupiter:junit-jupiter:5.5.2")
 
+  compile("io.ktor:ktor-server-netty:$ktor_version")
+  compile("io.ktor:ktor-gson:$ktor_version")
+
   implementation("com.google.firebase:firebase-admin:6.11.0")
-  compile("io.javalin:javalin:3.6.0")
   // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
   compile("org.slf4j:slf4j-simple:1.8.0-beta4")
-  compile("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.0")
-  compile("org.webjars.npm:vue:2.6.10")
   compile("io.github.cdimascio:java-dotenv:5.1.3")
 }
 

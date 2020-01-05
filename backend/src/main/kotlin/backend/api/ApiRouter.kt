@@ -1,39 +1,63 @@
 package backend.api
 
 import backend.models.pizza.PizzaType
-import io.javalin.Javalin
-import io.javalin.apibuilder.ApiBuilder.delete
-import io.javalin.apibuilder.ApiBuilder.get
-import io.javalin.apibuilder.ApiBuilder.patch
-import io.javalin.apibuilder.ApiBuilder.path
-import io.javalin.apibuilder.ApiBuilder.post
-import io.javalin.core.security.Role
+import io.ktor.application.Application
+import io.ktor.application.call
+import io.ktor.application.install
+import io.ktor.features.ContentNegotiation
+import io.ktor.gson.gson
+import io.ktor.http.ContentType
+import io.ktor.request.receive
+import io.ktor.response.respond
+import io.ktor.response.respondText
+import io.ktor.routing.Routing
+import io.ktor.routing.delete
+import io.ktor.routing.get
+import io.ktor.routing.patch
+import io.ktor.routing.post
+import io.ktor.routing.route
+import io.ktor.routing.routing
 
-enum class AppRole : Role { ANYONE, LOGGED_IN, ADMIN }
-
-fun apiRoutes(app: Javalin) {
-  val pizzaController = PizzaController()
-  app.routes {
-    path("api") {
-      path("/pizzas") {
-        get { ctx -> ctx.json(pizzaController.getAll()) }
-        post { ctx ->
-          val pizza = ctx.body<PizzaType>()
-          pizzaController.create(pizza)
-          ctx.status(201)
-        }
-        path(":pizza-id") {
-          get { ctx -> pizzaController.getOne(ctx.pathParam("pizza-id").toInt())?.let { ctx.json(it) } }
-          patch { ctx ->
-            pizzaController.update(ctx.pathParam("pizza-id").toInt(), ctx.body<PizzaType>())
-            ctx.status(204)
-          }
-          delete { ctx ->
-            pizzaController.delete(ctx.pathParam("pizza-id").toInt())
-            ctx.status(204)
-          }
-        }
+fun Application.apiRoutes() {
+  install(ContentNegotiation) {
+    gson {
+      setPrettyPrinting()
+    }
+  }
+  routing {
+    route("/") {
+      get {
+        call.respondText(
+          "<a href='/pizzas'>pizzas</a><br>" +
+            "<a href='/orders'>orders</a>", ContentType.Text.Html
+        )
       }
+    }
+    pizzaRoutes()
+  }
+}
+
+fun Routing.pizzaRoutes() {
+  val pizzaController = PizzaController()
+  route("/pizzas") {
+    get { call.respond(pizzaController.getAll()) }
+    post {
+      val pizza = call.receive<PizzaType>()
+      pizzaController.create(pizza)
+      call.respond(201)
+    }
+    get("/{id}") {
+      val pizza: PizzaType? = pizzaController.getOne(call.parameters["id"]!!.toInt())
+      call.respond(pizza ?: 404)
+
+    }
+    patch("/{id}") {
+      pizzaController.update(call.parameters["id"]!!.toInt(), call.receive<PizzaType>())
+      call.respond(204)
+    }
+    delete("/{id}") {
+      pizzaController.delete(call.parameters["id"]!!.toInt())
+      call.respond(204)
     }
   }
 }

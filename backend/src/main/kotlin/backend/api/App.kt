@@ -9,7 +9,9 @@ import com.google.auth.oauth2.GoogleCredentials
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import io.github.cdimascio.dotenv.dotenv
-import io.javalin.Javalin
+import io.ktor.application.Application
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.netty.Netty
 import java.io.FileInputStream
 
 fun main() {
@@ -29,7 +31,5 @@ fun main() {
     .build()
   FirebaseApp.initializeApp(options)
 
-  val app = Javalin.create { config -> config.enableWebjars() }.start(7070)
-  apiRoutes(app)
-  app.get("/") { ctx -> ctx.result("Hello World") }
+  embeddedServer(Netty, port = 8080, module = Application::apiRoutes).start(wait = true)
 }
