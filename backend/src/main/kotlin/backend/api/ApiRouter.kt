@@ -49,7 +49,6 @@ fun Routing.pizzaRoutes() {
     get("/{id}") {
       val pizza: PizzaType? = pizzaController.getOne(call.parameters["id"]!!.toInt())
       call.respond(pizza ?: 404)
-
     }
     patch("/{id}") {
       pizzaController.update(call.parameters["id"]!!.toInt(), call.receive<PizzaType>())
